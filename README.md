@@ -6,7 +6,6 @@ StQL is kind like [GraphQL](http://graphql.org), we hash the sonata code and sel
 
 StQL aims to `serverless query engine`, which means that you don't need to write complex routes in network request, we hash them, and the result is unique, the bad face of StQL is that it doesn't have indexes, you can write a cache server if you need to handle the big data.
 
-
 ## Usage
 
 For example, we got a `user` table here.
@@ -39,3 +38,27 @@ For a http request template:
 | GET `/e7280aa76daecbcc09565500ae86058762289f49b7cbf7c8d983ee9628c8d811` | (...)  |
 
 the `/e7280aa76daecbcc09565500ae86058762289f49b7cbf7c8d983ee9628c8d811` is the hash of `(user ...)`
+
+## Operation
+
+The unbelievable part of StQL is, the query in sonata can __opreate__ in server-side, kind like smart-contract!
+
+For example: 
+
+```
+use stql::StQL;
+
+let s = StQL::new("/usr/local/etc/stql").use("sled");
+
+let set_query = r#"(foo "I'm foo's content!")"#;
+let hash = StQL.run(query);
+// hash: 2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae
+
+let get_query = r#"(foo)"#
+let foo = StQL.run(get_query);
+// foo: I'm foo's content!
+
+let get_query_by_hash = r#"(2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae)"
+let foo_content = StQL.run(get_query);
+// foo_content = I'm foo's content!
+```
